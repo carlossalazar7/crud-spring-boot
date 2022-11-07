@@ -4,7 +4,6 @@ import com.tutorial.crud.dto.Mensaje;
 import com.tutorial.crud.dto.ProductDto;
 import com.tutorial.crud.entity.Producto;
 import com.tutorial.crud.service.ProductoService;
-import com.tutorial.crud.util.StringUtis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +45,7 @@ public class ProductoController {
 
     @PostMapping("")
     public ResponseEntity<Mensaje> create(@RequestBody ProductDto productDto) {
-        if (StringUtis.isBlank(productDto.getNombre())) {
+        if (productDto.getNombre()==null) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre del producto es obligatorio"), HttpStatus.BAD_REQUEST);
         }
         if (productDto.getPrecio() == null || productDto.getPrecio() < 0) {
@@ -68,7 +67,7 @@ public class ProductoController {
         if (productoService.existByNommbre(productDto.getNombre()) && productoService.getByNombre(productDto.getNombre()).get().getId() != id) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre ya se encuentra registrado"), HttpStatus.BAD_REQUEST);
         }
-        if (StringUtis.isBlank(productDto.getNombre())) {
+        if (productDto.getNombre()==null) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre del producto es obligatorio"), HttpStatus.BAD_REQUEST);
         }
         if (productDto.getPrecio() == null || productDto.getPrecio() < 0) {
