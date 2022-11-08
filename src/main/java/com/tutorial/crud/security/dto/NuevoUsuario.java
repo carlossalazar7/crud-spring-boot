@@ -10,6 +10,9 @@ import java.util.Set;
 @Data
 public class NuevoUsuario {
     @NotBlank
+    private  String nombre;
+
+    @NotBlank
     private  String nombreUsuario;
 
     @Email

@@ -7,6 +7,7 @@ import com.tutorial.crud.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public class ProductoController {
 
     @PostMapping("")
     public ResponseEntity<Mensaje> create(@RequestBody ProductDto productDto) {
-        if (productDto.getNombre()==null) {
+        if (productDto.getNombre() == null) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre del producto es obligatorio"), HttpStatus.BAD_REQUEST);
         }
         if (productDto.getPrecio() == null || productDto.getPrecio() < 0) {
@@ -67,7 +68,7 @@ public class ProductoController {
         if (productoService.existByNommbre(productDto.getNombre()) && productoService.getByNombre(productDto.getNombre()).get().getId() != id) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre ya se encuentra registrado"), HttpStatus.BAD_REQUEST);
         }
-        if (productDto.getNombre()==null) {
+        if (productDto.getNombre() == null) {
             return new ResponseEntity<Mensaje>(new Mensaje("El nombre del producto es obligatorio"), HttpStatus.BAD_REQUEST);
         }
         if (productDto.getPrecio() == null || productDto.getPrecio() < 0) {
@@ -84,6 +85,7 @@ public class ProductoController {
         return new ResponseEntity<Mensaje>(new Mensaje("Producto actualizado con éxito"), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Mensaje> delete(@PathVariable("id") int id) {
         if (!productoService.existsById(id)) {
