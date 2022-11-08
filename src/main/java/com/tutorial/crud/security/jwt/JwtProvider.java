@@ -47,6 +47,7 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token);
+            return true;
         } catch (MalformedJwtException e) {
             logger.error("Token mal formado");
         } catch (UnsupportedJwtException e) {

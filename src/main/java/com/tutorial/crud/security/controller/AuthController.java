@@ -10,7 +10,8 @@ import com.tutorial.crud.security.enums.RolNombre;
 import com.tutorial.crud.security.jwt.JwtProvider;
 import com.tutorial.crud.security.service.RolService;
 import com.tutorial.crud.security.service.UsuarioService;
-import org.apache.coyote.Response;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +28,10 @@ import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired
@@ -74,9 +76,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
+        log.info("usuario: "+loginUsuario.getNombreUsuario());
+        log.info("password: "+loginUsuario.getPassword());
+
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<Mensaje>(new Mensaje("Usuario inválido"), HttpStatus.UNAUTHORIZED);
         }
+
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUsuario.getNombreUsuario(), loginUsuario.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
