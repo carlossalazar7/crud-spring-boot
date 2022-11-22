@@ -25,8 +25,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -87,7 +90,14 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);
         jwtDto jwtDto = new jwtDto(jwt);
-        return new ResponseEntity<jwtDto>(jwtDto, HttpStatus.ACCEPTED);
+        Usuario usuario = usuarioService.getByNombreUsuario(loginUsuario.getNombreUsuario()).get();
+        HashMap<String, String> response = new HashMap<>();
+        response.put("token", jwtDto.getToken());
+        response.put("userName", usuario.getNombreUsuario());
+        response.put("email", usuario.getEmail());
+        response.put("name",usuario.getNombre());
+        response.put("roles",usuario.getRoles().stream().map(e-> e.getRolNombre()).collect(Collectors.toList()).toString());
+        return new ResponseEntity<Object>(response, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/refresh")
