@@ -79,9 +79,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUsuario loginUsuario, BindingResult bindingResult) {
-        log.info("usuario: "+loginUsuario.getNombreUsuario());
-        log.info("password: "+loginUsuario.getPassword());
-
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<Mensaje>(new Mensaje("Usuario inválido"), HttpStatus.UNAUTHORIZED);
         }
@@ -96,6 +93,7 @@ public class AuthController {
         response.put("userName", usuario.getNombreUsuario());
         response.put("email", usuario.getEmail());
         response.put("name",usuario.getNombre());
+        response.put("id", String.valueOf(usuario.getId()));
         response.put("roles",usuario.getRoles().stream().map(e-> e.getRolNombre()).collect(Collectors.toList()).toString());
         return new ResponseEntity<Object>(response, HttpStatus.ACCEPTED);
     }
